@@ -30,7 +30,6 @@ if (props.useColor && typeof props.data === "number" && props.colorRange) {
         calcResult = Math.floor((props.data - upperBound) / interval);
     }
     bgColor = calcResult;
-    console.log(data, upperBound, lowerBound, interval, calcResult);
 } else {
     bgColor = -1;
 }
@@ -52,3 +51,9 @@ if (props.useColor && typeof props.data === "number" && props.colorRange) {
     </td>
     <td v-else style="background-color: red">{{ data }}</td>
 </template>
+
+<style scoped>
+td{
+    height: 4vh;
+}
+</style>

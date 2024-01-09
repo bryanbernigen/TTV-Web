@@ -1,5 +1,9 @@
 <script setup>
 import axios from "axios";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const recordId = route.params.recordId;
 const adminName = localStorage.getItem("adminName");
 
 let isExistingUser = true;
@@ -30,6 +34,10 @@ const toggleUser = (existingUser) => {
 };
 
 const searchUser = () => {
+    if (isExistingUser) {
+        return;
+    }
+
     //Check email validity
     const email = document.getElementById("userEmail").value;
     if (!email.includes("@")) {
@@ -47,18 +55,23 @@ const searchUser = () => {
         .get(`http://localhost:5000/api/users/email/${email}`)
         .then((response) => {
             if (response.status === 200) {
-                console.log(response.data);
                 user = response.data;
-                document.getElementById("userName").value = user.name;
-                document.getElementById("userAge").value = user.age;
-                document.getElementById("userAddress").value = user.address;
+                if (user == null) {
+                    document.getElementById("userName").value = "";
+                    document.getElementById("userAge").value = "";
+                    document.getElementById("userAddress").value = "";
+                } else {
+                    document.getElementById("userName").value = user.name;
+                    document.getElementById("userAge").value = user.age;
+                    document.getElementById("userAddress").value = user.address;
+                }
             } else {
                 alert(response.data.message);
             }
         });
 };
 
-const submitRecord = () => {
+const createNewRecord = () => {
     const adminId = localStorage.getItem("adminId");
     const userId = user._id;
     const date = document.getElementById("date").value;
@@ -83,7 +96,44 @@ const submitRecord = () => {
         temperature,
     };
 
-    console.log(newRecord);
+    return newRecord;
+};
+
+const createNewUser = async () => {
+    return new Promise((resolve, reject) => {
+        if (isExistingUser) {
+            resolve(user);
+        }
+
+        const email = document.getElementById("userEmail").value;
+        const name = document.getElementById("userName").value;
+        const age = document.getElementById("userAge").value;
+        const address = document.getElementById("userAddress").value;
+
+        const newUser = {
+            email,
+            name,
+            age,
+            address,
+        };
+
+        axios.post("http://localhost:5000/api/users", newUser).then((response) => {
+            if (response.status === 201) {
+                user = response.data;
+
+                resolve(user);
+            } else {
+                alert(response.data.message);
+                reject(null);
+            }
+        });
+    });
+};
+
+const submitRecord = async () => {
+    await createNewUser();
+
+    const newRecord = createNewRecord();
 
     axios
         .post("http://localhost:5000/api/records", newRecord)
@@ -97,6 +147,84 @@ const submitRecord = () => {
             }
         });
 };
+
+const updateRecord = async () => {
+    await createNewUser();
+
+    const newRecord = createNewRecord();
+
+    axios
+        .put("http://localhost:5000/api/records/" + recordId, newRecord)
+        .then((response) => {
+            if (response.status === 200) {
+                alert("Record Updated successfully");
+                //Refresh page
+                window.location.href = "/records/edit/" + recordId;
+            } else {
+                alert(response.data.message);
+            }
+        });
+};
+
+const deleteRecord = () => {
+    //Confirm delete
+    const res = prompt(
+        "Are you sure you want to delete this record? Type yes to confirm"
+    );
+    if (res !== "yes") {
+        return;
+    }
+
+    //Delete record
+    axios
+        .delete("http://localhost:5000/api/records/" + recordId)
+        .then((response) => {
+            if (response.status === 200) {
+                alert("Record Deleted successfully");
+                //Back to Record Page
+                window.location.href = "/records";
+            } else {
+                alert(response.data.message);
+            }
+        });
+};
+
+const changeIntoEditMode = async (recordId) => {
+    axios
+        .get("http://localhost:5000/api/records/" + recordId)
+        .then((response) => {
+            if (response.status === 200) {
+                user = response.data.userId;
+                //Auto fill user info
+                document.getElementById("userEmail").value = user.email;
+                document.getElementById("userName").value = user.name;
+                document.getElementById("userAge").value = user.age;
+                document.getElementById("userAddress").value = user.address;
+                //Auto fill record info
+                document.getElementById("adminName").value = adminName;
+                document.getElementById("date").value =
+                    response.data.date.split("T")[0];
+                document.getElementById("systoleBloodPressure").value =
+                    response.data.bloodPressureSystolic;
+                document.getElementById("diastoleBloodPressure").value =
+                    response.data.bloodPressureDiastolic;
+                document.getElementById("pulse").value = response.data.pulse;
+                document.getElementById("breathingRate").value =
+                    response.data.breathingRate;
+                document.getElementById("temperature").value =
+                    response.data.temperature;
+            } else {
+                alert(response.data.message);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+if (recordId) {
+    changeIntoEditMode(recordId);
+}
 </script>
 
 <template>
@@ -238,12 +366,29 @@ const submitRecord = () => {
                 </div>
             </form>
             <button
+                v-if="recordId == null"
                 type="button"
                 class="btn btn-success"
                 @click="submitRecord()"
             >
                 Submit Record
             </button>
+            <div v-else class="multi-button-container">
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    @click="updateRecord()"
+                >
+                    Update Record
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    @click="deleteRecord()"
+                >
+                    Delete Record
+                </button>
+            </div>
         </div>
     </div>
 </template>
