@@ -18,6 +18,10 @@ const props = defineProps({
         type: Array,
         required: false,
     },
+    actionBasePath: {
+        type: String,
+        required: false,
+    },
 });
 const datas = props.datas;
 const headers = props.headers;
@@ -27,7 +31,7 @@ const columCount = headers.length;
 const rowCount = datas.length;
 
 const getRoutes = (i) => {
-    return "/records/edit/" + datas[i - 1]["_id"];
+    return props.actionBasePath + datas[i - 1]["_id"];
 };
 </script>
 
@@ -41,13 +45,12 @@ const getRoutes = (i) => {
             <TableCell
                 v-for="j in columCount"
                 :data="datas[i - 1][properties[j - 1]]"
-                :useColor="true"
                 :colorRange="colorRanges[j - 1]"
             ></TableCell>
             <td class="center">
                 <RouterLink :to="getRoutes(i)">
                     <button type="button" class="btn btn-primary">
-                        Edit Record
+                        See Detail
                     </button>
                 </RouterLink>
             </td>

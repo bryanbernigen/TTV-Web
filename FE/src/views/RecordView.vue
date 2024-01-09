@@ -2,7 +2,6 @@
 import Table from "@/components/Table.vue";
 import axios from "axios";
 
-const token = localStorage.getItem("token");
 const fetchData = async () => {
     const res = await axios.get("http://localhost:5000/api/records");
     return res.data;
@@ -32,26 +31,31 @@ const colorRangeBloodPressureSystolic = {
     interval: 10,
     goodUpperBound: 120,
     goodLowerBound: 60,
+    useColor: true,
 };
 const colorRangeBloodPressureDiastolic = {
     interval: 10,
     goodUpperBound: 80,
     goodLowerBound: 40,
+    useColor: true,
 };
 const colorRangePulse = {
     interval: 10,
     goodUpperBound: 100,
     goodLowerBound: 60,
+    useColor: true,
 };
 const colorRangeBreathingRate = {
     interval: 10,
     goodUpperBound: 20,
     goodLowerBound: 10,
+    useColor: true,
 };
 const colorRangeTemperature = {
-    interval: 1,
+    interval: 0.5,
     goodUpperBound: 37.5,
     goodLowerBound: 36.5,
+    useColor: true,
 };
 const colorRanges = [
     {},
@@ -78,20 +82,22 @@ const colorRanges = [
             :headers="headers"
             :properties="properties"
             :colorRanges="colorRanges"
+            actionBasePath="/records/edit/"
         />
     </div>
 </template>
 
 <style scoped>
-.btn{
+.btn {
     max-height: 5vh;
     align-self: center;
+    padding-top: 1vh;
 }
 .table-header-container {
     display: flex;
     flex-direction: row;
     justify-content: c;
-    gap: 2vw;
+    gap: 0.5vw;
     margin-left: 2vw;
 }
 

@@ -62,10 +62,10 @@ const route = userDefined ? "/profile" : "/login";
                         >
                     </li>
                     <li class="header__item">
-                        <a
+                        <RouterLink
                             class="header__link header__link--second js-ga-nav-bar"
-                            href="/rumah-sakit"
-                            >User</a
+                            to="/users"
+                            >User</RouterLink
                         >
                     </li>
                 </ul>

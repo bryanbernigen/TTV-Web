@@ -29,6 +29,21 @@ const router = createRouter({
       name: 'editRecords',
       component: () => import('../views/DetailRecordView.vue')
     },
+    {
+      path: '/users',
+      name: 'users',
+      component: () => import('../views/UserView.vue')
+    },
+    {
+      path: '/users/add',
+      name: 'addUsers',
+      component: () => import('../views/UserDetailView.vue')
+    },
+    {
+      path: '/users/edit/:userId',
+      name: 'detailUsers',
+      component: () => import('../views/UserDetailView.vue')
+    },
   ]
 })
 

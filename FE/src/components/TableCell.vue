@@ -4,11 +4,6 @@ const props = defineProps({
         type: [String, Number],
         required: true,
     },
-    useColor: {
-        type: Boolean,
-        required: false,
-        default: false,
-    },
     colorRange: {
         type: Object,
         required: false,
@@ -16,7 +11,7 @@ const props = defineProps({
 });
 
 let bgColor;
-if (props.useColor && typeof props.data === "number" && props.colorRange) {
+if (typeof props.data === "number" && props.colorRange && props.colorRange.useColor) {
     const data = props.data;
     const interval = props.colorRange.interval;
     const upperBound = props.colorRange.goodUpperBound;
