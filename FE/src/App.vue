@@ -11,5 +11,7 @@ const token = localStorage.getItem("token");
 
 <template>
     <Navbar/>
-    <RouterView />
+    <Suspense>
+        <RouterView />
+    </Suspense>
 </template>

@@ -51,35 +51,21 @@ const route = userDefined ? "/profile" : "/login";
                         <a
                             class="header__link js-ga-nav-bar header__link--second"
                             href="/penyakit"
-                            >Penyakit</a
+                            >Home</a
                         >
                     </li>
                     <li class="header__item">
-                        <a
+                        <RouterLink
                             class="header__link header__link--second js-ga-nav-bar"
-                            href="/obat"
-                            >Obat</a
+                            to="/records"
+                            >Records</RouterLink
                         >
                     </li>
                     <li class="header__item">
                         <a
                             class="header__link header__link--second js-ga-nav-bar"
                             href="/rumah-sakit"
-                            >Cari Rumah Sakit</a
-                        >
-                    </li>
-                    <li class="header__item">
-                        <a
-                            class="header__link header__link--second js-ga-nav-bar"
-                            href="/apotik"
-                            >Apotik</a
-                        >
-                    </li>
-                    <li class="header__item">
-                        <a
-                            class="header__link header__link--second js-ga-nav-bar"
-                            href="/tanya-dokter"
-                            >Tanya Dokter</a
+                            >User</a
                         >
                     </li>
                 </ul>
