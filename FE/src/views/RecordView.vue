@@ -4,11 +4,7 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const fetchData = async () => {
-    const res = await axios.get("http://localhost:5000/api/records", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const res = await axios.get("http://localhost:5000/api/records");
     return res.data;
 };
 const data = await fetchData();
@@ -72,7 +68,9 @@ const colorRanges = [
 <template>
     <div class="table-header-container">
         <h1>TVV Records</h1>
-        <button type="button" class="btn btn-success">Add Record</button>
+        <RouterLink to="/records/add" class="btn">
+            <button type="button" class="btn btn-success">Add Record</button>
+        </RouterLink>
     </div>
     <div class="table-container">
         <Table
