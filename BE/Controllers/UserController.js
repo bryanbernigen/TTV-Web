@@ -1,6 +1,12 @@
 const User = require("../Models/UserModel");
+const { decodeToken } = require("./utils");
 
 const getAllUsers = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+
     try {
         const users = await User.find();
         res.status(200).json(users);
@@ -10,6 +16,11 @@ const getAllUsers = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+
     const { name, email, age, address } = req.body;
 
     const newUser = new User({
@@ -28,21 +39,28 @@ const registerUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+
     const { userId } = req.params;
 
     const { name, email, age, address } = req.body;
 
     try {
         //Update user
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-            name,
-            email,
-            age,
-            address,
-        },
-        {
-            new: true,
-        }
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                name,
+                email,
+                age,
+                address,
+            },
+            {
+                new: true,
+            }
         );
 
         res.status(201).json(updatedUser);
@@ -52,6 +70,11 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+
     const { userId } = req.params;
 
     try {
@@ -59,7 +82,7 @@ const deleteUser = async (req, res) => {
         const deletedUser = await User.findByIdAndDelete(userId);
 
         //TODO:Delete all TTV records of the user
-        
+
         res.status(201).json(deletedUser);
     } catch (error) {
         res.status(400).json({ error });
@@ -67,6 +90,11 @@ const deleteUser = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+    
     const { userId } = req.params;
 
     try {

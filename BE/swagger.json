@@ -15,6 +15,10 @@
         {
             "name": "User",
             "description": "API for user in the system"
+        },
+        {
+            "name": "Auth",
+            "description": "API for authentication in the system"
         }
     ],
     "paths": {
@@ -25,6 +29,11 @@
                 ],
                 "summary": "Get all users",
                 "description": "Get all users in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -57,6 +66,11 @@
                 ],
                 "summary": "Create a new user",
                 "description": "Create a new user in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "description": "User object that needs to be added to the system",
                     "content": {
@@ -98,6 +112,11 @@
                 ],
                 "summary": "Get a user",
                 "description": "Get a user in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "userId",
@@ -148,6 +167,11 @@
                 ],
                 "summary": "Update a user",
                 "description": "Update a user in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "userId",
@@ -208,6 +232,11 @@
                 ],
                 "summary": "Delete a user",
                 "description": "Delete a user in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "userId",
@@ -252,9 +281,112 @@
                     }
                 }
             }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login as admin",
+                "description": "Login as admin in the system",
+                "requestBody": {
+                    "description": "Admin object that needs to be added to the system",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "$ref": "#/components/examples/AdminEmail"
+                                    },
+                                    "password": {
+                                        "$ref": "#/components/examples/AdminPassword"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorSchema400"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register as admin",
+                "description": "Register as admin in the system",
+                "requestBody": {
+                    "description": "Admin object that needs to be added to the system",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Admin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Admin"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorSchema400"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
         "schemas": {
             "User": {
                 "type": "object",
@@ -301,6 +433,39 @@
                     }
                 }
             },
+            "Admin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "$ref": "#/components/examples/AdminEmail"
+                    },
+                    "password": {
+                        "$ref": "#/components/examples/AdminPassword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Admin"
+                    }
+                }
+            },
+            "AdminResponse": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#/components/examples/AdminId"
+                    },
+                    "email": {
+                        "$ref": "#/components/examples/AdminEmail"
+                    },
+                    "password": {
+                        "$ref": "#/components/examples/AdminPassword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Admin"
+                    }
+                }
+            },
             "ErrorSchema400": {
                 "type": "object",
                 "properties": {
@@ -331,6 +496,15 @@
         "examples": {
             "UserId": {
                 "example": "659cf795f933bdcf9b148861"
+            },
+            "AdminId": {
+                "example": "659d0157a039d9c15a5ff5cd"
+            },
+            "AdminEmail": {
+                "example": "admin@gmail.com"
+            },
+            "AdminPassword": {
+                "example": "password"
             }
         }
     }
