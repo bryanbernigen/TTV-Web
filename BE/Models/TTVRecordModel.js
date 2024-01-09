@@ -17,23 +17,23 @@ const ttvRecordSchema = new mongoose.Schema({
         required: true,
     },
     bloodPressureSystolic: {
-        type: number,
+        type: Number,
         required: true,
     },
     bloodPressureDiastolic: {
-        type: number,
+        type: Number,
         required: true,
     },
     pulse: {
-        type: number,
+        type: Number,
         required: true,
     },
     breathingRate: {
-        type: number,
+        type: Number,
         required: true,
     },
     temperature: {
-        type: number,
+        type: Number,
         required: true,
     },
 });
