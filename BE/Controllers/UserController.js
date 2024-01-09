@@ -105,10 +105,27 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getUserByEmail = async (req, res) => {
+    if (!decodeToken(req)) {
+        res.status(400).json({ error: "Invalid token" });
+        return;
+    }
+    
+    const { email } = req.params;
+
+    try {
+        const user = await User.findOne({ email });
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error });
+    }
+};
+
 module.exports = {
     registerUser,
     updateUser,
     deleteUser,
     getAllUsers,
     getUserById,
+    getUserByEmail,
 };

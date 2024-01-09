@@ -11,6 +11,7 @@ router.post("/users", UserController.registerUser);
 router.put("/users/:userId", UserController.updateUser);
 router.delete("/users/:userId", UserController.deleteUser);
 router.get("/users/:userId", UserController.getUserById);
+router.get("/users/email/:email", UserController.getUserByEmail);
 
 //Admin routes
 router.post("/admin/login", AdminController.loginAdmin);

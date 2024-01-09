@@ -286,6 +286,49 @@
                 }
             }
         },
+        "/users/email/{email}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get a user by email",
+                "description": "Get a user by email in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Email of user to return",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/examples/UserEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "$ref": "#/components/schemas/UserResponse"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "$ref": "#/components/schemas/ErrorSchema404"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
@@ -813,6 +856,9 @@
         "examples": {
             "UserId": {
                 "example": "659cf795f933bdcf9b148861"
+            },
+            "UserEmail":{
+                "example": "example@gmail.com"
             },
             "AdminId": {
                 "example": "659d0157a039d9c15a5ff5cd"
