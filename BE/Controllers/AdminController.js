@@ -40,6 +40,11 @@ const loginAdmin = async (req, res) => {
 
             res.status(200).json({
                 token,
+                admin: {
+                    id: admin._id,
+                    name: admin.name,
+                    email: admin.email,
+                },
             });
         }
     } catch (error) {
