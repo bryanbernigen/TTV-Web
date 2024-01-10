@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('../views/DetailRecordView.vue')
     },
     {
+      path: '/records/add/:email',
+      name: 'addCertainUserRecords',
+      component: () => import('../views/DetailRecordView.vue')
+    },
+    {
       path: '/records/edit/:recordId',
       name: 'editRecords',
       component: () => import('../views/DetailRecordView.vue')

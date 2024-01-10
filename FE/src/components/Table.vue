@@ -23,7 +23,7 @@ const props = defineProps({
         required: false,
     },
 });
-const datas = props.datas;
+const datas = props.datas ?? [];
 const headers = props.headers;
 const properties = props.properties;
 const colorRanges = props.colorRanges;

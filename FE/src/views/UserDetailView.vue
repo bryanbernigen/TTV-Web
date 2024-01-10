@@ -1,9 +1,40 @@
 <script setup>
 import Table from "@/components/Table.vue";
+import Test from "@/components/Test.vue";
+import axios from "axios";
 import { useRoute } from "vue-router";
+import { ref } from "vue";
 
 const route = useRoute();
 const userId = route.params.userId;
+var user = null;
+const isDataLoaded = ref(false);
+
+const createUser = () => {
+    const userEmail = document.getElementById("userEmail").value;
+    const userName = document.getElementById("userName").value;
+    const userAge = document.getElementById("userAge").value;
+    const userAddress = document.getElementById("userAddress").value;
+
+    if (!userEmail.includes("@")) {
+        alert("Please enter a valid email");
+        return;
+    }
+
+    if (!userEmail || !userName) {
+        alert("Please enter an email address and name!");
+        return null;
+    }
+
+    const newUser = {
+        email: userEmail,
+        name: userName,
+        age: userAge,
+        address: userAddress,
+    };
+
+    return newUser;
+};
 
 const deleteUser = () => {
     console.log("deleteUser");
@@ -14,10 +45,62 @@ const editUser = () => {
 };
 
 const addUser = () => {
-    console.log("addUser");
+    const newUser = createUser();
+    console.log(newUser);
+
+    if (newUser == null) {
+        alert("Please enter an email address and name!");
+        return;
+    }
+
+    axios.post("http://localhost:5000/api/users", newUser).then((response) => {
+        if (response.status === 201) {
+            user = response.data;
+            alert("User added successfully!");
+        } else {
+            alert(response.data.message);
+        }
+    });
 };
 
-const recordData = [];
+const changeIntoEditMode = async (userId) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .get("http://localhost:5000/api/users/" + userId)
+            .then((response) => {
+                if (response.status === 200) {
+                    resolve(response.data);
+                } else {
+                    alert(response.data.message);
+                    reject();
+                }
+            });
+    });
+};
+
+const getAddUserRoute = () => {
+    try {
+        return "/records/add/" + user.email;
+    } catch (error) {
+        return "/records/add";
+    }
+};
+
+var recordData = [];
+if (userId != null) {
+    changeIntoEditMode(userId).then((data) => {
+        user = data;
+        document.getElementById("userEmail").value = user.email;
+        document.getElementById("userName").value = user.name;
+        document.getElementById("userAge").value = user.age;
+        document.getElementById("userAddress").value = user.address;
+        recordData = user.ttvRecords;
+        isDataLoaded.value = true;
+    });
+} else {
+    isDataLoaded.value = true;
+}
+
 const headers = [
     "Date",
     "Admin ID",
@@ -76,8 +159,6 @@ const colorRanges = [
     colorRangeBreathingRate,
     colorRangeTemperature,
 ];
-
-
 </script>
 
 <template>
@@ -143,14 +224,21 @@ const colorRanges = [
             </div>
         </div>
         <div class="right-container">
-            <h1>User records</h1>
+            <h1>User Records</h1>
+            <RouterLink :to="getAddUserRoute()" class="btn">
+                <button type="button" class="btn btn-success">
+                    Add Record
+                </button>
+            </RouterLink>
+            <br />
             <Table
-            :datas="recordData"
-            :headers="headers"
-            :properties="properties"
-            :colorRanges="colorRanges"
-            actionBasePath="/records/edit/"
-        />
+                v-if="isDataLoaded"
+                :datas="recordData"
+                :headers="headers"
+                :properties="properties"
+                :colorRanges="colorRanges"
+                actionBasePath="/records/edit/"
+            />
         </div>
     </div>
 </template>
