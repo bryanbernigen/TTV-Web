@@ -4,6 +4,10 @@ import axios from "axios";
 
 const fetchData = async () => {
     const res = await axios.get("http://localhost:5000/api/records");
+    //Change date format
+    res.data.forEach((record) => {
+        record.date = record.date.split("T")[0];
+    });
     return res.data;
 };
 const data = await fetchData();

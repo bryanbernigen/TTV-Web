@@ -126,6 +126,10 @@ const getAddUserRoute = () => {
 var recordData = [];
 if (userId != null) {
     changeIntoEditMode(userId).then((data) => {
+        //Change date format
+        data.ttvRecords.forEach((record) => {
+            record.date = record.date.split("T")[0];
+        });
         vUser.value = data;
         isDataLoaded.value = true;
     });

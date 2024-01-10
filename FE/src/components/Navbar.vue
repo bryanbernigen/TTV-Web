@@ -12,7 +12,6 @@ const logoutHandler = () => {
 
 const name = localStorage.getItem('adminName');
 const userDefined = name !== null;
-const route = userDefined ? "/profile" : "/login";
 </script>
 
 <template>
@@ -26,9 +25,10 @@ const route = userDefined ? "/profile" : "/login";
                     />
                 </RouterLink>
                 <div class="header__link-shop">
-                    <RouterLink
+                    <a
                         class="header__health-shop js-ga-nav-bar"
-                        :to="route"
+                        href="/login"
+                        @click="logoutHandler()"
                         ><img
                             class="header__link-img"
                             src="https://static.honestdocs.id/assets/shop/icon-hdmall-e21ae4916c92d2e41d52be4afa2f4f9df2ae481dbfb5b8c96e704fc7c2547cda.svg"
@@ -39,10 +39,10 @@ const route = userDefined ? "/profile" : "/login";
                         </span>
                         <span class="is-regular" v-else> Login </span>
                         <span class="is-hover" v-if="userDefined==true">
-                            View Profile
+                            Logout
                         </span>
                         <span class="is-hover" v-else> Login </span>
-                    </RouterLink>
+                    </a>
                 </div>
             </div>
             <div class="header__row">

@@ -30,9 +30,9 @@ getCount();
     <div class="main-content">
         <h1>Dashboard</h1>
         <div class="dashboard-container mb-5">
-            <CountCard title="Number of User" :count="count.user" unit="person" />
-            <CountCard title="Number of Record" :count="count.record" unit="record" />
-            <CountCard title="Number of Admin" :count="count.admin" unit="person" />
+            <CountCard title="Number of User" :count="count.user" unit="person" rerouteUrl="/users"/>
+            <CountCard title="Number of Record" :count="count.record" unit="record" rerouteUrl="/records" />
+            <CountCard title="Number of Admin" :count="count.admin" unit="person"/>
         </div>
         <div class="add-data-container">
             <div class="add-data-half-container">
