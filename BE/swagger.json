@@ -329,6 +329,30 @@
                 }
             }
         },
+        "/usercount":{
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get number of users",
+                "description": "Get number of users in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [
@@ -419,6 +443,31 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/ErrorSchema400"
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        
+        },
+        "/admincount":{
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get number of admin",
+                "description": "Get number of admin in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": 1
                             }
                         }
                     }
@@ -659,6 +708,30 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/ErrorSchema404"
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/recordcount":{
+            "get": {
+                "tags": [
+                    "TTV Record"
+                ],
+                "summary": "Get number of TTV Record",
+                "description": "Get number of TTV Record in the system",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "example": 1
                             }
                         }
                     }

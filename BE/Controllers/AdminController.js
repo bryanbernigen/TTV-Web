@@ -53,4 +53,13 @@ const loginAdmin = async (req, res) => {
     }
 };
 
-module.exports = { registerAdmin, loginAdmin };
+const getNumberOfAdmins = async (req, res) => {
+    try {
+        const admins = await Admin.countDocuments();
+        res.status(200).json(admins);
+    } catch (error) {
+        res.status(400).json({ error });
+    }
+};
+
+module.exports = { registerAdmin, loginAdmin, getNumberOfAdmins };

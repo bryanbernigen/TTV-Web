@@ -134,10 +134,20 @@ const deleteRecord = async (req, res) => {
     }
 };
 
+const getNumberOfRecords = async (req, res) => {
+    try {
+        const records = await TTVRecord.countDocuments();
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(400).json({ error });
+    }
+}
+
 module.exports = {
     addRecord,
     getAllRecords,
     getRecordById,
     updateRecord,
     deleteRecord,
+    getNumberOfRecords,
 };

@@ -129,6 +129,16 @@ const getUserByEmail = async (req, res) => {
     }
 };
 
+const getNumberOfUsers = async (req, res) => {
+    try {
+        const users = await User.countDocuments();
+        res.status(200).json(users);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error });
+    }
+}
+
 module.exports = {
     registerUser,
     updateUser,
@@ -136,4 +146,5 @@ module.exports = {
     getAllUsers,
     getUserById,
     getUserByEmail,
+    getNumberOfUsers,
 };
