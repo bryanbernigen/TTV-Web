@@ -7,14 +7,14 @@ import { ref } from "vue";
 
 const route = useRoute();
 const userId = route.params.userId;
-var user = null;
 const isDataLoaded = ref(false);
+const vUser = ref({_id: "", email: "", name: "", age: "", address: "", ttvRecords: []});
 
 const createUser = () => {
-    const userEmail = document.getElementById("userEmail").value;
-    const userName = document.getElementById("userName").value;
-    const userAge = document.getElementById("userAge").value;
-    const userAddress = document.getElementById("userAddress").value;
+    const userEmail = vUser.value.email;
+    const userName = vUser.value.name;
+    const userAge = vUser.value.age;
+    const userAddress = vUser.value.address;
 
     if (!userEmail.includes("@")) {
         alert("Please enter a valid email");
@@ -55,7 +55,7 @@ const addUser = () => {
 
     axios.post("http://localhost:5000/api/users", newUser).then((response) => {
         if (response.status === 201) {
-            user = response.data;
+            vUser.value = response.data;
             alert("User added successfully!");
         } else {
             alert(response.data.message);
@@ -80,7 +80,7 @@ const changeIntoEditMode = async (userId) => {
 
 const getAddUserRoute = () => {
     try {
-        return "/records/add/" + user.email;
+        return "/records/add/" + vUser.value.email;
     } catch (error) {
         return "/records/add";
     }
@@ -89,12 +89,7 @@ const getAddUserRoute = () => {
 var recordData = [];
 if (userId != null) {
     changeIntoEditMode(userId).then((data) => {
-        user = data;
-        document.getElementById("userEmail").value = user.email;
-        document.getElementById("userName").value = user.name;
-        document.getElementById("userAge").value = user.age;
-        document.getElementById("userAddress").value = user.address;
-        recordData = user.ttvRecords;
+        vUser.value = data;
         isDataLoaded.value = true;
     });
 } else {
@@ -177,15 +172,16 @@ const colorRanges = [
                         id="userEmail"
                         @keyup.enter="searchUser"
                         @blur="searchUser"
+                        v-model="vUser.email"
                     />
                 </div>
                 <div class="mb-5">
                     <label for="userName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="userName" />
+                    <input type="text" class="form-control" id="userName" v-model="vUser.name" />
                 </div>
                 <div class="mb-5">
                     <label for="userAge" class="form-label">Age</label>
-                    <input type="number" class="form-control" id="userAge" />
+                    <input type="number" class="form-control" id="userAge" v-model="vUser.age" />
                 </div>
                 <div class="mb-5">
                     <label for="userAddress" class="form-label">Address</label>
@@ -193,6 +189,7 @@ const colorRanges = [
                         class="form-control"
                         id="userAddress"
                         rows="6"
+                        v-model="vUser.address"
                     ></textarea>
                 </div>
             </form>
@@ -233,7 +230,7 @@ const colorRanges = [
             <br />
             <Table
                 v-if="isDataLoaded"
-                :datas="recordData"
+                :datas="vUser.ttvRecords"
                 :headers="headers"
                 :properties="properties"
                 :colorRanges="colorRanges"

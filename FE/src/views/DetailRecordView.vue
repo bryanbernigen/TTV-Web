@@ -1,6 +1,20 @@
 <script setup>
 import axios from "axios";
 import { useRoute } from "vue-router";
+import { ref } from "vue";
+
+const vUser = ref({ _id: "", name: "", email: "", age: "", address: "" });
+const vRecord = ref({
+    _id: "",
+    adminId: "",
+    userId: "",
+    date: "",
+    bloodPressureSystolic: "",
+    bloodPressureDiastolic: "",
+    pulse: "",
+    breathingRate: "",
+    temperature: "",
+});
 
 const route = useRoute();
 const recordId = route.params.recordId;
@@ -41,7 +55,7 @@ const searchUser = (inputtedEmail = undefined) => {
     }
 
     //Check email validity
-    const email = inputtedEmail || document.getElementById("userEmail").value;
+    const email = inputtedEmail || vUser.value.email;
     if (!email.includes("@")) {
         alert("Please enter a valid email");
         return;
@@ -57,15 +71,12 @@ const searchUser = (inputtedEmail = undefined) => {
         .get(`http://localhost:5000/api/users/email/${email}`)
         .then((response) => {
             if (response.status === 200) {
-                user = response.data;
-                if (user == null) {
-                    document.getElementById("userName").value = "";
-                    document.getElementById("userAge").value = "";
-                    document.getElementById("userAddress").value = "";
+                if (response.data) {
+                    vUser.value = response.data;
                 } else {
-                    document.getElementById("userName").value = user.name;
-                    document.getElementById("userAge").value = user.age;
-                    document.getElementById("userAddress").value = user.address;
+                    vUser.value.name = "";
+                    vUser.value.age = "";
+                    vUser.value.address = "";
                 }
             } else {
                 alert(response.data.message);
@@ -75,17 +86,13 @@ const searchUser = (inputtedEmail = undefined) => {
 
 const createNewRecord = () => {
     const adminId = localStorage.getItem("adminId");
-    const userId = user._id;
-    const date = document.getElementById("date").value;
-    const bloodPressureSystolic = document.getElementById(
-        "systoleBloodPressure"
-    ).value;
-    const bloodPressureDiastolic = document.getElementById(
-        "diastoleBloodPressure"
-    ).value;
-    const pulse = document.getElementById("pulse").value;
-    const breathingRate = document.getElementById("breathingRate").value;
-    const temperature = document.getElementById("temperature").value;
+    const userId = vUser.value._id;
+    const date = vRecord.value.date;
+    const bloodPressureSystolic = vRecord.value.bloodPressureSystolic;
+    const bloodPressureDiastolic = vRecord.value.bloodPressureDiastolic;
+    const pulse = vRecord.value.pulse;
+    const breathingRate = vRecord.value.breathingRate;
+    const temperature = vRecord.value.temperature;
 
     const newRecord = {
         adminId,
@@ -104,17 +111,18 @@ const createNewRecord = () => {
 const createNewUser = async () => {
     return new Promise((resolve, reject) => {
         if (isExistingUser) {
-            resolve(user);
+            resolve();
+            return;
         }
 
-        const email = document.getElementById("userEmail").value;
-        const name = document.getElementById("userName").value;
-        const age = document.getElementById("userAge").value;
-        const address = document.getElementById("userAddress").value;
+        const email = vUser.value.email;
+        const name = vUser.value.name;
+        const age = vUser.value.age;
+        const address = vUser.value.address;
 
-        if(!email || !name){
+        if (!email || !name) {
             alert("Please fill in email and name");
-            reject(null);
+            reject();
         }
 
         const newUser = {
@@ -124,16 +132,18 @@ const createNewUser = async () => {
             address,
         };
 
-        axios.post("http://localhost:5000/api/users", newUser).then((response) => {
-            if (response.status === 201) {
-                user = response.data;
+        axios
+            .post("http://localhost:5000/api/users", newUser)
+            .then((response) => {
+                if (response.status === 201) {
+                    vUser.value = response.data;
 
-                resolve(user);
-            } else {
-                alert(response.data.message);
-                reject(null);
-            }
-        });
+                    resolve();
+                } else {
+                    alert(response.data.message);
+                    reject();
+                }
+            });
     });
 };
 
@@ -201,25 +211,11 @@ const changeIntoEditMode = async (recordId) => {
         .get("http://localhost:5000/api/records/" + recordId)
         .then((response) => {
             if (response.status === 200) {
-                user = response.data.userId;
-                //Auto fill user info
-                document.getElementById("userEmail").value = user.email;
-                document.getElementById("userName").value = user.name;
-                document.getElementById("userAge").value = user.age;
-                document.getElementById("userAddress").value = user.address;
+                vUser.value = response.data.userId;
                 //Auto fill record info
-                document.getElementById("adminName").value = adminName;
-                document.getElementById("date").value =
-                    response.data.date.split("T")[0];
-                document.getElementById("systoleBloodPressure").value =
-                    response.data.bloodPressureSystolic;
-                document.getElementById("diastoleBloodPressure").value =
-                    response.data.bloodPressureDiastolic;
-                document.getElementById("pulse").value = response.data.pulse;
-                document.getElementById("breathingRate").value =
-                    response.data.breathingRate;
-                document.getElementById("temperature").value =
-                    response.data.temperature;
+                vRecord.value = response.data;
+                vRecord.value.adminName = adminName;
+                vRecord.value.date = response.data.date.split("T")[0];
             } else {
                 alert(response.data.message);
             }
@@ -229,10 +225,9 @@ const changeIntoEditMode = async (recordId) => {
         });
 };
 
-
 if (recordId) {
     changeIntoEditMode(recordId);
-}else if(userEmail){
+} else if (userEmail) {
     searchUser(userEmail);
 }
 </script>
@@ -253,7 +248,7 @@ if (recordId) {
                         id="userEmail"
                         @keyup.enter="searchUser()"
                         @blur="searchUser()"
-                        v-model="userEmail"
+                        v-model="vUser.email"
                     />
                 </div>
                 <div class="mb-5">
@@ -263,6 +258,7 @@ if (recordId) {
                         class="form-control"
                         id="userName"
                         disabled
+                        v-model="vUser.name"
                     />
                 </div>
                 <div class="mb-5">
@@ -272,6 +268,7 @@ if (recordId) {
                         class="form-control"
                         id="userAge"
                         disabled
+                        v-model="vUser.age"
                     />
                 </div>
                 <div class="mb-5">
@@ -281,6 +278,7 @@ if (recordId) {
                         id="userAddress"
                         rows="6"
                         disabled
+                        v-model="vUser.address"
                     ></textarea>
                 </div>
             </form>
@@ -319,7 +317,12 @@ if (recordId) {
                 </div>
                 <div class="mb-5">
                     <label for="date" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="date" />
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="date"
+                        v-model="date"
+                    />
                 </div>
                 <div class="mb-5">
                     <label for="bloodPressure" class="form-label"
@@ -334,6 +337,7 @@ if (recordId) {
                                 type="number"
                                 class="form-control"
                                 id="systoleBloodPressure"
+                                v-model="vRecord.bloodPressureSystolic"
                             />
                         </div>
                         <div class="separator">/</div>
@@ -347,13 +351,19 @@ if (recordId) {
                                 type="number"
                                 class="form-control"
                                 id="diastoleBloodPressure"
+                                v-model="vRecord.bloodPressureDiastolic"
                             />
                         </div>
                     </div>
                 </div>
                 <div class="mb-5">
                     <label for="pulse" class="form-label">Pulse</label>
-                    <input type="number" class="form-control" id="pulse" />
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="pulse"
+                        v-model="vRecord.pulse"
+                    />
                 </div>
                 <div class="mb-5">
                     <label for="breathingRate" class="form-label"
@@ -363,6 +373,7 @@ if (recordId) {
                         type="number"
                         class="form-control"
                         id="breathingRate"
+                        v-model="vRecord.breathingRate"
                     />
                 </div>
                 <div class="mb-5">
@@ -373,6 +384,7 @@ if (recordId) {
                         type="number"
                         class="form-control"
                         id="temperature"
+                        v-model="vRecord.temperature"
                     />
                 </div>
             </form>
