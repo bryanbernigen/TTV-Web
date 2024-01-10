@@ -48,10 +48,10 @@ const route = userDefined ? "/profile" : "/login";
             <div class="header__row">
                 <ul class="header__list header__list--second js-menu-links">
                     <li class="header__item">
-                        <a
+                        <RouterLink
                             class="header__link js-ga-nav-bar header__link--second"
-                            href="/penyakit"
-                            >Home</a
+                            to="/"
+                            >Home</RouterLink
                         >
                     </li>
                     <li class="header__item">

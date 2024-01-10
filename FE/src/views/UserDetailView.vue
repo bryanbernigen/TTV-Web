@@ -1,6 +1,5 @@
 <script setup>
 import Table from "@/components/Table.vue";
-import Test from "@/components/Test.vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
