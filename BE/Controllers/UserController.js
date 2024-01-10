@@ -102,7 +102,7 @@ const getUserById = async (req, res) => {
         let user = await User.findById(userId);
 
         //Get all TTV records with userId = userId
-        const ttvRecords = await TTV.find({ userId });
+        const ttvRecords = await TTV.find({ userId }).sort({ date: -1 });
 
         //Add TTV records to the user object
         user = { ...user._doc, ttvRecords };
