@@ -82,9 +82,10 @@ const deleteUser = async (req, res) => {
         //Delete user
         const deletedUser = await User.findByIdAndDelete(userId);
 
-        //TODO:Delete all TTV records of the user
-
-        res.status(201).json(deletedUser);
+        //Delete all TTV records of the user
+        const deletedRecord = await TTV.deleteMany({ userId });
+        
+        res.status(200).json({deletedUser, deletedRecord});
     } catch (error) {
         res.status(400).json({ error });
     }
