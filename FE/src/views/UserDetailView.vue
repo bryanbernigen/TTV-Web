@@ -7,7 +7,14 @@ import { ref } from "vue";
 const route = useRoute();
 const userId = route.params.userId;
 const isDataLoaded = ref(false);
-const vUser = ref({_id: "", email: "", name: "", age: "", address: "", ttvRecords: []});
+const vUser = ref({
+    _id: "",
+    email: "",
+    name: "",
+    age: "",
+    address: "",
+    ttvRecords: [],
+});
 
 const createUser = () => {
     const userEmail = vUser.value.email;
@@ -36,16 +43,47 @@ const createUser = () => {
 };
 
 const deleteUser = () => {
-    console.log("deleteUser");
+    const res = prompt(
+        "Are you sure you want to delete this user? enter 'yes' to confirm"
+    );
+    if (res === "yes") {
+        axios
+            .delete("http://localhost:5000/api/users/" + vUser.value._id)
+            .then((response) => {
+                console.log(response);
+                if (response.status === 200) {
+                    alert("User deleted successfully!");
+                    // Redirect to users page
+                    window.location.href = "/users";
+                } else {
+                    alert(response.data.message);
+                }
+            });
+    }
 };
 
 const editUser = () => {
-    console.log("editUser");
+    const newUser = createUser();
+
+    if (newUser == null) {
+        alert("Please enter an email address and name!");
+        return;
+    }
+
+    axios
+        .put("http://localhost:5000/api/users/" + vUser.value._id, newUser)
+        .then((response) => {
+            if (response.status === 201) {
+                vUser.value = response.data;
+                alert("User editted successfully!");
+            } else {
+                alert(response.data.message);
+            }
+        });
 };
 
 const addUser = () => {
     const newUser = createUser();
-    console.log(newUser);
 
     if (newUser == null) {
         alert("Please enter an email address and name!");
@@ -176,11 +214,21 @@ const colorRanges = [
                 </div>
                 <div class="mb-5">
                     <label for="userName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="userName" v-model="vUser.name" />
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="userName"
+                        v-model="vUser.name"
+                    />
                 </div>
                 <div class="mb-5">
                     <label for="userAge" class="form-label">Age</label>
-                    <input type="number" class="form-control" id="userAge" v-model="vUser.age" />
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="userAge"
+                        v-model="vUser.age"
+                    />
                 </div>
                 <div class="mb-5">
                     <label for="userAddress" class="form-label">Address</label>
@@ -205,7 +253,7 @@ const colorRanges = [
                     id="existingUserButton"
                     type="button"
                     class="btn btn-success"
-                    @click="editUser(true)"
+                    @click="editUser()"
                 >
                     Edit User
                 </button>
@@ -213,7 +261,7 @@ const colorRanges = [
                     id="newUserButton"
                     type="button"
                     class="btn btn-danger"
-                    @click="deleteUser(false)"
+                    @click="deleteUser()"
                 >
                     Delete User
                 </button>
@@ -221,7 +269,7 @@ const colorRanges = [
         </div>
         <div class="right-container">
             <h1>User Records</h1>
-            <RouterLink :to="getAddUserRoute()" class="btn">
+            <RouterLink :to="getAddUserRoute()" class="btn" v-if="vUser._id!=''">
                 <button type="button" class="btn btn-success">
                     Add Record
                 </button>

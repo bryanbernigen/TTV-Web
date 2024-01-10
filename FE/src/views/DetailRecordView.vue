@@ -216,6 +216,7 @@ const changeIntoEditMode = async (recordId) => {
                 vRecord.value = response.data;
                 vRecord.value.adminName = adminName;
                 vRecord.value.date = response.data.date.split("T")[0];
+                console.log(vRecord.value.date);
             } else {
                 alert(response.data.message);
             }
@@ -321,7 +322,7 @@ if (recordId) {
                         type="date"
                         class="form-control"
                         id="date"
-                        v-model="date"
+                        v-model="vRecord.date"
                     />
                 </div>
                 <div class="mb-5">
