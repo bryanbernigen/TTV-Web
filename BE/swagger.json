@@ -138,7 +138,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserResponse"
+                                    "$ref": "#/components/schemas/UserWithRecords"
                                 }
                             }
                         }
@@ -537,7 +537,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TTVRecordResponse"
+                                    "$ref": "#/components/schemas/TTVRecordWithUser"
                                 }
                             }
                         }
@@ -720,6 +720,36 @@
                     }
                 }
             },
+            "UserWithRecords":{
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#/components/examples/UserId"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "example@gmail.com"
+                    },
+                    "age": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Jakarta"
+                    },
+                    "ttvRecords":{
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TTVRecordResponse"
+                        }
+                    }
+                }
+            },
             "Admin": {
                 "type": "object",
                 "properties": {
@@ -799,6 +829,44 @@
                     },
                     "userId": {
                         "$ref": "#/components/examples/UserId"
+                    },
+                    "date": {
+                        "type": "string",
+                        "example": "2020-01-01T00:00:00.000Z"
+                    },
+                    "bloodPressureSystolic": {
+                        "type": "integer",
+                        "example": 120
+                    },
+                    "bloodPressureDiastolic": {
+                        "type": "integer",
+                        "example": 80
+                    },
+                    "pulse": {
+                        "type": "integer",
+                        "example": 80
+                    },
+                    "breathingRate": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "example": 36.5
+                    }
+                }
+            },
+            "TTVRecordWithUser":{
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#/components/examples/UserId"
+                    },
+                    "adminId": {
+                        "$ref": "#/components/examples/AdminId"
+                    },
+                    "userId": {
+                        "$ref": "#/components/schemas/UserResponse"
                     },
                     "date": {
                         "type": "string",

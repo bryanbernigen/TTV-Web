@@ -1,4 +1,5 @@
 const User = require("../Models/UserModel");
+const TTV = require("../Models/TTVRecordModel");
 const { decodeToken } = require("./utils");
 
 const getAllUsers = async (req, res) => {
@@ -98,7 +99,14 @@ const getUserById = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const user = await User.findById(userId);
+        let user = await User.findById(userId);
+
+        //Get all TTV records with userId = userId
+        const ttvRecords = await TTV.find({ userId });
+
+        //Add TTV records to the user object
+        user = { ...user._doc, ttvRecords };
+
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ error });
