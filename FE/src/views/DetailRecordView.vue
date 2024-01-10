@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const recordId = route.params.recordId;
 const userEmail = route.params.email;
+var lastSearchedEmail;
 const adminName = localStorage.getItem("adminName");
 
 let isExistingUser = true;
@@ -34,13 +35,13 @@ const toggleUser = (existingUser) => {
     }
 };
 
-const searchUser = () => {
+const searchUser = (inputtedEmail = undefined) => {
     if (!isExistingUser) {
         return;
     }
 
     //Check email validity
-    const email = userEmail ?? document.getElementById("userEmail").value;
+    const email = inputtedEmail || document.getElementById("userEmail").value;
     if (!email.includes("@")) {
         alert("Please enter a valid email");
         return;
@@ -232,7 +233,7 @@ const changeIntoEditMode = async (recordId) => {
 if (recordId) {
     changeIntoEditMode(recordId);
 }else if(userEmail){
-    searchUser();
+    searchUser(userEmail);
 }
 </script>
 
@@ -250,8 +251,8 @@ if (recordId) {
                         type="email"
                         class="form-control"
                         id="userEmail"
-                        @keyup.enter="searchUser"
-                        @blur="searchUser"
+                        @keyup.enter="searchUser()"
+                        @blur="searchUser()"
                         v-model="userEmail"
                     />
                 </div>
